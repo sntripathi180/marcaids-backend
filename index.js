@@ -9,7 +9,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-    origin:process.env.CORS_ERROR || "*",
+    origin:process.env.CORS_ORIGIN.split(",") || "*",
     credentials:true
 }))
 
