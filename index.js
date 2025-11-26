@@ -9,18 +9,24 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-    origin:process.env.CORS_ORIGIN.split(",") || "*",
+    origin:process.env.CORS_ORIGIN?.split(",") || "*",
     credentials:true
 }))
 
 app.use(bodyParser.json());
 
+const googleCredentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
 
-const auth = new google.auth.GoogleAuth({
-  keyFile: process.env.GOOGLE_CREDENTIALS, 
-  scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-});
+googleCredentials.private_key = googleCredentials.private_key.replace(/\\n/g, "\n");
 
+
+
+const auth = new google.auth.JWT(
+    googleCredentials.client_email,
+    null,
+    googleCredentials.private_key,
+    ["https://www.googleapis.com/auth/spreadsheets"]
+);
 const sheets = google.sheets({ version: 'v4', auth });
 
 
